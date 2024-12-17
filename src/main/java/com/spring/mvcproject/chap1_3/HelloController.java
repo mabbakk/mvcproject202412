@@ -23,5 +23,4 @@ public class HelloController {
         System.out.println("bye ~~ spring mvc world!!");
         return "";
     }
-
 }
