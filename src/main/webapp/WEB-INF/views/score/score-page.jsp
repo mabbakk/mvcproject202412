@@ -54,7 +54,7 @@
     }
 
     section.score {
-      padding: 200px 50px 100px;
+      padding: 50px 50px 100px;
       font-size: 1.5em;
     }
 
@@ -104,22 +104,114 @@
 
     <ul class="score-list">
       <li class="list-header">
-        <div class="count">총 학생 수: xxx명</div>
+        <div class="count">총 학생 수: <span id="count">0</span>명</div>
         <div class="sort-link-group">
-          <div><a href="#">학번순</a></div>
-          <div><a href="#">이름순</a></div>
-          <div><a href="#">평균순</a></div>
+          <div><a id="id" href="#">학번순</a></div>
+          <div><a id="name" href="#">이름순</a></div>
+          <div><a id="average" href="#">평균순</a></div>
         </div>
-
       </li>
 
       <!-- 학생 성적정보가 들어갈 부분 -->
+      <li>
+        <ul id="scores"></ul>
+      </li>
 
     </ul>
 
   </section>
 </div>
 
+
+<script>
+  const API_URL = '/api/v1/scores';
+
+  // 화면에 성적목록을 렌더링하는 함수
+  function renderScoreList(data) {  // data는 배열의 이름!
+
+    // 총 학생 수 렌더링
+    document.getElementById('count').textContent = data.length;
+
+    const $scores = document.getElementById('scores');
+
+    data.forEach(({id, name, kor, eng, math}) => {
+      $scores.innerHTML += `
+                    <li>
+                        # 이름: \${name}, 국어: \${kor}점,
+                        영어: \${eng}점, 수학: \${math}점
+                        <a href='#' class='del-btn'>삭제</a>
+                    </li>
+                `;
+    });
+  }
+
+  // 서버에서 성적 정보를 가져오는 요청 메서드
+  async function fetchGetScores() {
+    const res = await fetch(API_URL);
+            // + '?sort=\${sortType}');
+    const data = await res.json();
+    console.log(data);
+
+    // 화면에 정보 렌더링
+    renderScoreList(data);
+  }
+
+  // id 순으로 성적 정렬하여 가져오는 요청 메서드
+  async function fetchGetSortedScores() {
+    const res = await fetch(`${API_URL}?sorted=id`);
+    const data = await res.json();
+    console.log(data);
+
+    // 화면에 정보 렌더링
+    renderScoreList(data);
+  }
+
+
+  //==== 실행 코드 ====//
+  fetchGetScores();
+
+  const $clickIdSort = document.getElementById('id');
+  const $clickNameSort = document.getElementById('name');
+  const $clickAverageSort = document.getElementById('average');
+
+  $clickIdSort.addEventListener('click', function () {
+    // id 순으로 정렬된 데이터 가져오기
+    fetch(API_URL)
+            .then(res => res.json())
+            .then(data => {
+              console.log(data);
+              data.forEach(id => {
+                $clickIdSort.innerHTML += ` <li>
+                        \${id} 이름: \${name}, 국어: \${kor}점,
+                        영어: \${eng}점, 수학: \${math}점
+                        <a href='#' class='del-btn'>삭제</a>
+                    </li>
+                `;
+              })
+            })
+
+    fetchGetSortedScores();
+    alert("학번순으로 정렬합니다.");
+  })
+
+
+
+  $clickNameSort.addEventListener('click', function () {
+    // id 순으로 정렬된 데이터 가져오기
+
+    fetchGetSortedScores();
+    alert("이름순으로 정렬합니다.");
+  })
+
+
+  $clickAverageSort.addEventListener('click', function () {
+    // 평균순으로 정렬된 데이터 가져오기
+
+    fetchGetSortedScores();
+    alert("평균순으로 정렬합니다.");
+  })
+
+</script>
 
 </body>
 

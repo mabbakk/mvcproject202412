@@ -51,7 +51,7 @@ public class ProductController {
 //    public String getProduct(
 ////        @RequestParam("id") Long id,
 ////        @RequestParam("price") int price
-//            //를 아래와 같이 바꿔도 됨!
+//          를 아래와 같이 바꿔도 됨!
 //        Long id,
 //        int price
 //    ) {
