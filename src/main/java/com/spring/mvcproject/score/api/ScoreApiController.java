@@ -54,6 +54,15 @@ public class ScoreApiController {
         return "성적 정보 생성 완료! " + score;
     }
 
+    // 성적 정보 삭제요청 처리
+    @DeleteMapping("/{id}")
+    public String deleteScore(
+            @PathVariable Long id
+    ) {
+        scoreStore.remove(id);
+        return "성적 정보 삭제 성공! - id: " + id;
+    }
+
 
 
 
