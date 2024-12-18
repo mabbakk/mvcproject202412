@@ -16,10 +16,10 @@ public class ScoreApiController {
     private Long nextId = 1L;
 
     public ScoreApiController() {
-        Score s1 = new Score(nextId++, "산다라박", 70, 50, 60);
-        Score s2 = new Score(nextId++, "김마이클", 4, 100, 40);
-        Score s3 = new Score(nextId++, "박수포자", 55, 95, 15);
-        Score s4 = new Score(nextId++, "김말복", 100, 88, 75);
+        Score s1 = new Score(nextId++, "김말복", 100, 88, 75);
+        Score s2 = new Score(nextId++, "박수포자", 55, 95, 15);
+        Score s3 = new Score(nextId++, "김마이클", 4, 100, 40);
+        Score s4 = new Score(nextId++, "세종대왕", 100, 0, 90);
 
         scoreStore.put(s1.getId(), s1);
         scoreStore.put(s2.getId(), s2);
@@ -30,16 +30,46 @@ public class ScoreApiController {
     // 전체 성적정보 조회 (정렬 파라미터를 읽어야 함)
     // /api/v1/scores?sort=name
     @GetMapping
-    public List<Score> scoreList() {
-//        if("id".equals(nextId)) {
-//            score.sort(Comparator.comparingLong(Score::getId));
-//        }
+    public List<Score> scoreList(
+            @RequestParam(required = false, defaultValue = "id") String sort
+    ) {
+
+        System.out.println("정렬기준: " + sort);
+
         return new ArrayList<>(scoreStore.values())
                 .stream()
-                .sorted(Comparator.comparingLong(Score::getId))
-                .collect(Collectors.toList());
-
+                .sorted(getScoreComparator(sort))
+                .collect(Collectors.toList())
+                ;
     }
 
+    // 성적 정보 생성 요청 처리
+    @PostMapping
+    public String createScore(
+            // 클라이언트가 성적정보를 JSON으로 보냈다
+            @RequestBody Score score
+    ) {
+        score.setId(nextId++);
+        scoreStore.put(score.getId(), score);
+        return "성적 정보 생성 완료! " + score;
+    }
+
+
+
+
+
+    // 정렬 처리를 위한 정렬기 생성 유틸 메서드
+    private Comparator<Score> getScoreComparator(String sort) {
+        Comparator<Score> comparing = null;
+        switch (sort) {
+            case "id":
+                comparing = Comparator.comparing(Score::getId);
+                break;
+            case "name":
+                comparing = Comparator.comparing(Score::getName);
+                break;
+        }
+        return comparing;
+    }
 
 }

@@ -81,7 +81,7 @@
 
   <section class="score">
     <h1>시험 점수 등록</h1>
-    <form>
+    <form id="score-form">
       <label>
         # 이름: <input type="text" name="name">
       </label>
@@ -95,7 +95,7 @@
         # 수학: <input type="text" name="math">
       </label>
       <label>
-        <button type="submit">확인</button>
+        <button id="createBtn" type="submit">확인</button>
         <button id="go-home" type="button">홈화면으로</button>
       </label>
     </form>
@@ -127,12 +127,15 @@
   const API_URL = '/api/v1/scores';
 
   // 화면에 성적목록을 렌더링하는 함수
-  function renderScoreList(data) {  // data는 배열의 이름!
+  function renderScoreList(data) {
+
+    const $scores = document.getElementById('scores');
+    // 리셋
+    $scores.innerHTML = '';
 
     // 총 학생 수 렌더링
     document.getElementById('count').textContent = data.length;
 
-    const $scores = document.getElementById('scores');
 
     data.forEach(({id, name, kor, eng, math}) => {
       $scores.innerHTML += `
@@ -146,9 +149,8 @@
   }
 
   // 서버에서 성적 정보를 가져오는 요청 메서드
-  async function fetchGetScores() {
-    const res = await fetch(API_URL);
-            // + '?sort=\${sortType}');
+  async function fetchGetScores(sortType='id') {
+    const res = await fetch(API_URL + `?sort=\${sortType}`);
     const data = await res.json();
     console.log(data);
 
@@ -156,61 +158,55 @@
     renderScoreList(data);
   }
 
-  // id 순으로 성적 정렬하여 가져오는 요청 메서드
-  async function fetchGetSortedScores() {
-    const res = await fetch(`${API_URL}?sorted=id`);
-    const data = await res.json();
-    console.log(data);
-
-    // 화면에 정보 렌더링
-    renderScoreList(data);
+  // 서버로 성적 등록 POST요청을 전송하는 함수
+  async function fetchPostScore(scoreObj) {
+    // POST요청은 단순히 요청만보내는게 아니라
+    // 서버에 데이터를 제공해야함
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(scoreObj)
+    });
+    if (res.status === 200) {
+      // 등록된 내용을 렌더링
+      fetchGetScores();
+      document.getElementById('score-form').reset(); // 데이터 입력시 입력창 reset
+    } else {
+      alert('에러가 발생했습니다!');
+    }
   }
 
+  //==== 이벤트 리스너 등록 ====//
+  // 정렬처리 이벤트
+  document.querySelector('.sort-link-group').addEventListener('click', e => {
+    e.preventDefault();
+    if (!e.target.matches('a')) return;
+    const sortType = e.target.id;
+    console.log('정렬기준: ', sortType);
+
+    // 서버에 정렬기준을 가지고 목록 조회요청 전송
+    fetchGetScores(sortType);
+
+  });
+
+  // 성적 정보 등록 이벤트
+  document.getElementById('createBtn').addEventListener('click', e => {
+
+    e.preventDefault(); // form의 submit시 발생하는 새로고침 방지
+
+    const $form = document.getElementById('score-form');
+    // formData객체 생성
+    const formData = new FormData($form);
+    const scoreObj = Object.fromEntries(formData.entries());
+    console.log(scoreObj);
+
+    // 서버로 POST요청 전송
+    fetchPostScore(scoreObj);
+
+  });
 
   //==== 실행 코드 ====//
   fetchGetScores();
-
-  const $clickIdSort = document.getElementById('id');
-  const $clickNameSort = document.getElementById('name');
-  const $clickAverageSort = document.getElementById('average');
-
-  $clickIdSort.addEventListener('click', function () {
-    // id 순으로 정렬된 데이터 가져오기
-    fetch(API_URL)
-            .then(res => res.json())
-            .then(data => {
-              console.log(data);
-              data.forEach(id => {
-                $clickIdSort.innerHTML += ` <li>
-                        \${id} 이름: \${name}, 국어: \${kor}점,
-                        영어: \${eng}점, 수학: \${math}점
-                        <a href='#' class='del-btn'>삭제</a>
-                    </li>
-                `;
-              })
-            })
-
-    fetchGetSortedScores();
-    alert("학번순으로 정렬합니다.");
-  })
-
-
-
-  $clickNameSort.addEventListener('click', function () {
-    // id 순으로 정렬된 데이터 가져오기
-
-    fetchGetSortedScores();
-    alert("이름순으로 정렬합니다.");
-  })
-
-
-  $clickAverageSort.addEventListener('click', function () {
-    // 평균순으로 정렬된 데이터 가져오기
-
-    fetchGetSortedScores();
-    alert("평균순으로 정렬합니다.");
-  })
-
 </script>
 
 </body>
