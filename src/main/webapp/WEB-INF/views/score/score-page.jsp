@@ -177,6 +177,7 @@
     }
   }
 
+
   async function fetchDeleteScore(id) {
     const res = await fetch(`\${API_URL}/\${id}`, {
       method: 'DELETE'

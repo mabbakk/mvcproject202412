@@ -64,9 +64,6 @@ public class ScoreApiController {
     }
 
 
-
-
-
     // 정렬 처리를 위한 정렬기 생성 유틸 메서드
     private Comparator<Score> getScoreComparator(String sort) {
         Comparator<Score> comparing = null;

@@ -32,7 +32,7 @@ public class BookController {
 
     // 1. 전체 도서 조회 요청 처리
 
-    @GetMapping("")
+    @GetMapping
     public List<Book> List() {
         // 아래 주석과 같이 작성할 수도 있지만
 //        return bookStore.values().stream().collect(Collectors.toList());
