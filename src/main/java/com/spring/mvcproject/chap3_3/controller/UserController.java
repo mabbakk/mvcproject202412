@@ -33,7 +33,7 @@ public class UserController {
 
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)  //숫자 입력했을 때 잘못 입력할 수 있으니 상수UNAUTHORIZED를 적어준다!
-                    // 간혹 .___ 이렇게 뜨지 않는 것들이 있음! 그렇게 많이 유명하지 않은 것들.
+                    // 상수 입력 시 간혹 .___ 이렇게 뜨지 않는 것들이 있음! 그렇게 많이 유명하지 않은 것들.
                     // 그러면 그냥 위에 .status()로 적으면 됨!
                     .header("cause", "bad-age")  // 헤더를 조작할 수 있음 ResponseEntity 덕분에 사용할 수 있는 것.
                     .body("나이는 양수여야 합니다. age- " + user.getAge());

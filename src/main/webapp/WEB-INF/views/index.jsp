@@ -16,5 +16,15 @@
             <a href="/board/list">게시판 관리</a>
         </li>
     </ul>
+
+    <script>
+
+        fetch('/api/v1/boards')
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            });
+
+    </script>
 </body>
 </html>

@@ -1,7 +1,12 @@
 package com.spring.mvcproject.score.api;
 
+import com.spring.mvcproject.score.dto.request.ScoreCreateDto;
 import com.spring.mvcproject.score.entity.Score;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -45,13 +50,32 @@ public class ScoreApiController {
 
     // 성적 정보 생성 요청 처리
     @PostMapping
-    public String createScore(
+    public ResponseEntity<?> createScore(
             // 클라이언트가 성적정보를 JSON으로 보냈다
-            @RequestBody Score score
+            @RequestBody @Valid ScoreCreateDto dto
+            // 입력값 검증 결과를 가진 객체
+            , BindingResult bindingResult
     ) {
+        if (bindingResult.hasErrors()) { // 입력값 검증에서 에러가 발생했다면
+            Map<String, String> errorMap = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(err -> {
+                errorMap.put(err.getField(), err.getDefaultMessage());
+            });
+            return ResponseEntity
+                    .badRequest()
+                    .body(errorMap)
+                    ;
+        }
+
+        // ScoreCreateDto를 Score로 변환하는 작업
+        Score score = new Score(dto);
         score.setId(nextId++);
+
         scoreStore.put(score.getId(), score);
-        return "성적 정보 생성 완료! " + score;
+        return ResponseEntity
+                .ok()
+                .body("성적 정보 생성 완료! " + score);
+
     }
 
     // 성적 정보 삭제요청 처리
@@ -62,6 +86,9 @@ public class ScoreApiController {
         scoreStore.remove(id);
         return "성적 정보 삭제 성공! - id: " + id;
     }
+
+
+
 
 
     // 정렬 처리를 위한 정렬기 생성 유틸 메서드
