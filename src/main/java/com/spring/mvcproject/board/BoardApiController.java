@@ -47,4 +47,15 @@ public class BoardApiController {
     }
 
     // 게시물 등록 POST
+    @PostMapping
+    public String createBoard(
+            @RequestBody Board board  // JSON을 전달받을 때는 @RequesBody!
+    ) {
+        board.setId(nextId++);  // 사용자에게서는 제목과 내용만 받고 아이디는 우리가 정해줘야함!
+        board.setRegDateTime(LocalDateTime.now());  // 시간도 우리가!
+        System.out.println("board = " + board);
+        boardStore.put(board.getId(), board);
+        return "게시물 등록 성공! -" + board;
+    }
+
 }

@@ -211,17 +211,49 @@
 <!-- custom script -->
 <script>
     const $form = document.getElementById('board-form');
-    $form.addEventListener('submit', e => {
-        e.preventDefault();
-        const formData = new FormData($form);
-        console.log(formData.get('title'));
-        console.log(formData.get('content'));
+    const API_BASE_URL = '/api/v1/boards';
 
-        // 서버로 POST요청 보내기
+    async function fetchPost(payload) {
+        const res = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (res.status === 200) {
+            alert('게시물이 등록되었습니다.');
+            // 목록으로 링크이동
+            window.location.href='/board/list';  // 이동하면서 fetch 하면서 데이터 받아오면서 페이지 이동
+        } else {
+            alert('등록 실패!');
+        }
+    }
+
+
+    $form.addEventListener('submit', e => {
+        e.preventDefault();  // submit 하면 자동으로 새로고침이 되기 때문에 이를 방지한다! (기본 동작 방지)
+        // console.log('form이 제출됨!');
+
+        // payload (서버로 보낼 데이터) 만들기
+        // const payload = {
+        //     title : document.getElementById('title').value,
+        //     content: document.getElementById('content').value
+        // };
+
+        const formData = new FormData($form);
+        // const payload = {
+        //     title: formData.get('title'),
+        //     content: formData.get('content'),
+        // }
+
+        const payload = Object.fromEntries(formData.entries());
+        console.log('payload: ' + payload);
+
+        // 서버로 POST 요청
+        fetchPost(payload);  // 함수를 만들었으면 반드시 호출해줄 것!
+    });
+
 
         // 성공시 window.location.href='/board/list';
-
-    });
 </script>
 
 </body>
