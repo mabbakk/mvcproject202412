@@ -58,7 +58,7 @@ public class ScoreApiController {
 
         List<ScoreListDto> responseList = new ArrayList<>(scoreStore.values())
                 .stream()
-                .map(score -> new ScoreListDto(score))
+                .map(ScoreListDto::new)
                 .collect(Collectors.toList());
 
         // 석차 구하기

@@ -104,5 +104,15 @@ public class BoardApiController {
 
     }
 
+    // 게시물 상세 조회 요청
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> detailBoard(@PathVariable Long id) {
+        // Map에서 단일 조회 수행
+        Board targetId = boardStore.get(id);
+        return ResponseEntity
+                .ok()
+                .body("조회 성공! id = " + id);
+    }
+
 
 }
