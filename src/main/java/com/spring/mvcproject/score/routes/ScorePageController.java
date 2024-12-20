@@ -5,6 +5,7 @@ package com.spring.mvcproject.score.routes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -33,7 +34,14 @@ public class ScorePageController {
 
         mv.setViewName("score/score-page");
         return mv;
+    }
 
+    // 상세 조회 페이지 라우팅 (라우팅 : 그 페이지를 열어 이동한다!)
+    @GetMapping("score/{id}")
+    public String dstailPage(@PathVariable Long id, Model model) {  // Model을 사용해서
+        System.out.println("/board/%s : GET".formatted(id));
+        model.addAttribute("id", id);  // JSP에게 id를 전달!
+        return "score/score-detail";
     }
 
 }

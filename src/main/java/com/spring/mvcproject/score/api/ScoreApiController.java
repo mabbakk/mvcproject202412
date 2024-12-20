@@ -1,6 +1,7 @@
 package com.spring.mvcproject.score.api;
 
 import com.spring.mvcproject.score.dto.request.ScoreCreateDto;
+import com.spring.mvcproject.score.dto.response.ScoreDetailDto;
 import com.spring.mvcproject.score.dto.response.ScoreListDto;
 import com.spring.mvcproject.score.entity.Score;
 import jakarta.validation.Valid;
@@ -61,7 +62,7 @@ public class ScoreApiController {
                 .collect(Collectors.toList());
 
         // 석차 구하기
-        calculateRank(responseList);
+        calculateListRank(responseList);
 
         // 정렬 파라미터 처리
         responseList.sort(getScoreComparator(sort));
@@ -71,7 +72,42 @@ public class ScoreApiController {
                 .body(responseList);
     }
 
-    private static void calculateRank(List<ScoreListDto> responseList) {
+    // 성적 상세조회 요청
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findOne(@PathVariable Long id) {
+        // 데이터베이스(Map)에서 단일 조회 수행
+        Score targetStudent = scoreStore.get(id);
+        if (targetStudent == null) {
+            return ResponseEntity
+                    .status(404)
+                    .body("해당 정보를 찾을 수 없습니다: id - " + id);
+        }
+
+        // 석차와 총 학생수를 구하기 위해 학생 목록을 가져옴
+        List<Score> scoreList = new ArrayList<>(scoreStore.values());
+
+        scoreList.sort(Comparator.comparing((Score s) -> s.getKor() + s.getEng() + s.getMath()).reversed());
+
+        int rank = 1;
+        for (Score s : scoreList) { // 전체 학생을 순회하면서
+            if (s.getId().equals(targetStudent.getId())) { // 현재 발견된 학생을 찾으면 스톱
+                break;
+            }
+            rank++;
+        }
+
+        // Score엔터티를 ScoreDetailDto로 변환
+        ScoreDetailDto responseDto = new ScoreDetailDto(targetStudent, scoreList.size());
+        responseDto.setRank(rank);
+
+        return ResponseEntity
+                .ok()
+                .body(responseDto);
+    }
+
+
+    // 전체조회시 석차 구하기
+    private static void calculateListRank(List<ScoreListDto> responseList) {
         // 석차 구하기
         // 총점 내림차로 정렬
         responseList.sort(comparing(ScoreListDto::getAverage).reversed());
@@ -81,6 +117,8 @@ public class ScoreApiController {
             dto.setRank(currentRank++);
         }
     }
+
+
 
 
     // 성적 정보 생성 요청 처리

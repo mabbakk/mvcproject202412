@@ -18,10 +18,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public class BoardSaveDto {
 
-    // NotBlank는 빈 문자열만 방지 ""
-    // NotNull은 null값만 방지
-    // NotEmpty는 둘 다 방지
-
     // NotBlank는 빈문자열만 방지 ""
     // NotNull은 null값만 방지
     // NotEmpty는 둘다 방지

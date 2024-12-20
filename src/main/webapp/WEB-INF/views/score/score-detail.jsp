@@ -69,14 +69,14 @@
 
 <div class="wrap">
     <section class="score-main">
-        <h1>김철수님 성적 정보</h1>
+        <h1><span id="fullName">김철수</span>님 성적 정보</h1>
         <ul>
-            <li># 국어: 100점</li>
-            <li># 영어: 100점</li>
-            <li># 수학: 100점</li>
-            <li># 총점: 300점</li>
-            <li># 평균: 100점</li>
-            <li># 석차: 1 / 4</li>
+            <li># 국어: <span id="kor">100</span>점</li>
+            <li># 영어: <span id="eng">100</span>점</li>
+            <li># 수학: <span id="math">100</span>점</li>
+            <li># 총점: <span id="total">100</span>점</li>
+            <li># 평균: <span id="average">100</span>점</li>
+            <li># 석차: <span id="rank">1</span> / <span id="totalCount">4</span></li>
         </ul>
         <div class="btn-group">
             <a class="list-btn" href="/score/page">목록</a>
@@ -85,6 +85,30 @@
     </section>
 
 </div>
+
+<script>
+
+    const pathname = window.location.pathname;
+    console.log(pathname);
+
+
+    async function fetchDetail() {
+         const res = await fetch(`/api/v1/scores/${id}`);
+         const data = await res.json();
+        console.log(data);
+
+        // log에 데이터 다 불러왔으면 마지막 순서로 렌더링!
+        for (const property in data) {
+            const $target = document.getElementById(property)
+            if ($target) {
+                $target.textContent = data[property];
+            }
+        }
+    }
+    fetchDetail();  // 함수 호출 꼭 해주기!
+
+</script>
+
 </body>
 
 </html>
