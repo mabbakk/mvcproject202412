@@ -31,4 +31,14 @@ public class ScoreCreateDto {
     @Max(value = 100, message = "수학 점수는 100점 이하여야합니다.")
     @NotNull(message = "수학점수는 필수값입니다.")
     private Integer math;
+
+    public Score toEntity() {
+        Score s = new Score();
+        s.setName(this.studentName);
+        s.setKor(this.korean);
+        s.setEng(this.english);
+        s.setMath(this.math);
+        return s;
+    }
+
 }
