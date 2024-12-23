@@ -4,6 +4,8 @@ import com.spring.mvcproject.score.dto.request.ScoreCreateDto;
 import com.spring.mvcproject.score.dto.response.ScoreDetailDto;
 import com.spring.mvcproject.score.dto.response.ScoreListDto;
 import com.spring.mvcproject.score.entity.Score;
+import com.spring.mvcproject.score.repository.ScoreRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,29 +18,19 @@ import static java.util.Comparator.comparing;
 @Service
 public class ScoreService {
 
-    private Map<Long, Score> scoreStore = new HashMap<>();
+    private ScoreRepository scoreRepository;
 
-    private Long nextId = 1L;
-
-    public ScoreService() {
-        Score s1 = new Score(nextId++, "김말복", 100, 88, 75);
-        Score s2 = new Score(nextId++, "박수포자", 55, 95, 15);
-        Score s3 = new Score(nextId++, "김마이클", 4, 100, 40);
-        Score s4 = new Score(nextId++, "세종대왕", 100, 0, 90);
-
-        scoreStore.put(s1.getId(), s1);
-        scoreStore.put(s2.getId(), s2);
-        scoreStore.put(s3.getId(), s3);
-        scoreStore.put(s4.getId(), s4);
+    @Autowired
+    public ScoreService(ScoreRepository scoreRepository) {
+        this.scoreRepository = scoreRepository;
     }
 
     // 목록조회 요청 핵심 로직 처리
     public List<ScoreListDto> getList(String sort) {
-        // 저장된 성적 정보를 모두 읽어옴
-        List<Score> scoreList = new ArrayList<>(scoreStore.values());
+
 
         // 원본 성적 리스트를 클라이언트가 원하는 모양으로 DTO변환
-        List<ScoreListDto> responseData = scoreList
+        List<ScoreListDto> responseData = scoreRepository.findAll(sort)
                 .stream()
                 .map(score -> new ScoreListDto(score))
                 .collect(Collectors.toList());
@@ -56,7 +48,7 @@ public class ScoreService {
     // 성적 단일 조회 핵심 비즈로직 처리
     public ScoreDetailDto getDetail(Long id) {
         // 데이터베이스(Map)에서 단일 조회 수행
-        Score targetStudent = scoreStore.get(id);
+        Score targetStudent = scoreRepository.findOne(id);
 
         // 예외처리
         if (targetStudent == null) {
@@ -64,7 +56,7 @@ public class ScoreService {
         }
 
         // 석차와 총 학생수를 구하기 위해 학생 목록을 가져옴
-        List<Score> scoreList = new ArrayList<>(scoreStore.values());
+        List<Score> scoreList = new ArrayList<>(scoreRepository.findAll(null));
 
         scoreList.sort(Comparator.comparing((Score s) -> s.getKor() + s.getEng() + s.getMath()).reversed());
 
@@ -88,18 +80,16 @@ public class ScoreService {
     public Score create(ScoreCreateDto dto) {
         // ScoreCreateDto를 Score로 변환하는 작업
         Score score = dto.toEntity();
-        score.setId(nextId++);
 
-        // 데이터베이스에 저장
-        scoreStore.put(score.getId(), score);
+        scoreRepository.save(score);
 
         return score;
     }
 
     // 성적정보 삭제 비즈니스 로직 처리
     public void remove(Long id) {
-        Score removed = scoreStore.remove(id);
-        if (removed == null) {
+        boolean removed = scoreRepository.deleteById(id);
+        if (!removed) {
             throw new IllegalStateException("해당 성적정보는 존재하지 않습니다. id = " + id);
         }
     }
