@@ -306,6 +306,20 @@
     }
 
 
+    // 게시물 상세조회 페이지 라우팅 요청
+    $cardContainer.addEventListener('click', e => {
+
+        const $card = e.target.closest('.card');
+        if (!e.target.matches('.card *')) return;
+
+        const bno = $card.dataset.bno;
+        console.log('상세조회 시켜주세요! id - ', bno);
+
+        // 라우팅 요청
+        window.location.href=`/board/detail/\${bno}`;
+
+    });
+
     // ====== 메인 실행 코드 ===== //
     // 서버에 목록 조회 API요청 보내기
     fetchGetBoardList();
