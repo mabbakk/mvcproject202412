@@ -18,6 +18,7 @@ import static java.util.Comparator.comparing;
 @Service
 public class ScoreService {
 
+    // 서비스는 레포지토리에 의존!
     private ScoreRepository scoreRepository;
 
     @Autowired
