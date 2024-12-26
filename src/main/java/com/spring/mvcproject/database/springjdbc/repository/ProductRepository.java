@@ -1,11 +1,14 @@
 package com.spring.mvcproject.database.springjdbc.repository;
 
 import com.spring.mvcproject.database.springjdbc.entity.Product;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 //@AllArgsConstructor
@@ -58,6 +61,24 @@ public class ProductRepository {
                 WHERE id = ?
                 """;
         jdbcTemplate.update(sql, newPrice, id);
+    }
+
+    // 다중 SELECT
+    public List<Product> findAll() {
+        return jdbcTemplate.query("""
+                SELECT * FROM products
+                """, (rs, rowNum) -> new Product(rs));
+    }
+
+    // 단일 SELECT
+    public Product findById(Long id) {
+        return jdbcTemplate.queryForObject("""
+                SELECT * FROM products
+                WHERE id = ?
+                """,
+                (rs, rowNum) -> new Product(rs),
+                id
+        );
     }
 
 }
