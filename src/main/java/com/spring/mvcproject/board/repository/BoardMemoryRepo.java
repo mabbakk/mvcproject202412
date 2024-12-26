@@ -6,9 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@Repository
+//@Repository
 public class BoardMemoryRepo implements BoardRepository {
 
     private Map<Long, Board> boardStore = new HashMap<>();
@@ -28,4 +29,23 @@ public class BoardMemoryRepo implements BoardRepository {
     }
 
 
+    @Override
+    public List<Board> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public boolean save(Board board) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        return false;
+    }
+
+    @Override
+    public Board findOne(Long id) {
+        return null;
+    }
 }

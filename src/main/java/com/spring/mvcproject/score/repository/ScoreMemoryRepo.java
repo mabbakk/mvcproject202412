@@ -11,7 +11,7 @@ import static java.util.Comparator.comparing;
 
 // 역할: 성적정보를 메모리에서 관리하는 역할
 //@Component  // 스프링에 등록!
-@Repository  // 위에 Component 대신에 쓸 수 있음! Component 포함하고 있음.
+//@Repository  // 위에 Component 대신에 쓸 수 있음! Component 포함하고 있음.
 public class ScoreMemoryRepo implements ScoreRepository {
 
     private Map<Long, Score> scoreStore = new HashMap<>();
