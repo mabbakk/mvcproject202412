@@ -20,3 +20,11 @@ spring:
     username: root
     password: mariadb
     driver-class-name: org.mariadb.jdbc.Driver
+
+# MyBatis setting
+mybatis:
+  #sql file location
+  mapper-locations: classpath:mapper/**/*.xml    #classpath = main 아래 resources 파일!
+  type-aliases-package: com.spring.mvcproject
+  configuration:
+    map-underscore-to-camel-case: true   # 이름 규칙(camel-case만 맞춰주면 알아서 데이터를 넣어주겠다)

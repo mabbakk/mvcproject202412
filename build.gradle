@@ -42,6 +42,9 @@ dependencies {
     // 데이터베이스 라이브러리 - 모든 DB 공통
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
+    // MyBatis 라이브러리
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+
     // 마리아디비 커넥터 -  사용할 DB 전용  (오라클 쓸 거면 이거 말고 오라클 거 써야됨.)
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 
