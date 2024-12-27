@@ -24,7 +24,7 @@ spring:
 # MyBatis setting
 mybatis:
   #sql file location
-  mapper-locations: classpath:mapper/**/*.xml    #classpath = main 아래 resources 파일!
-  type-aliases-package: com.spring.mvcproject
+  mapper-locations: classpath:mapper/**/*.xml    #classpath = main 아래 resources 파일!  ,  ** : 몇 개의 폴더를 만들어도 괜찮다!
+  type-aliases-package: com.spring.mvcproject.database.mybatis    # 파일명을 풀네임으로 적지 않아도 이 설정을 하면 파일을 찾아줌! 그러나 같은 이름의 파일이 두 개가 있으면 얘가 못 찾음.
   configuration:
     map-underscore-to-camel-case: true   # 이름 규칙(camel-case만 맞춰주면 알아서 데이터를 넣어주겠다)

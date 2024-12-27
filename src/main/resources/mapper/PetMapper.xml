@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace: 연동할 인터페이스의 풀네임  -->
+<mapper namespace="com.spring.mvcproject.database.mybatis.PetRepository">
+
+    <!--  id: 추상메서드 이름  -->
+    <insert id="save">
+        INSERT INTO tbl_pet
+            (pet_name, pet_age, injection)
+        VALUES
+            (#{petName}, #{petAge}, #{injection})
+    </insert>
+
+    <select id="findById" resultType="Pet">
+        SELECT * FROM tbl_pet
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultType="Pet">
+        SELECT * FROM tbl_pet
+    </select>
+
+    <update id="updatePet">
+        UPDATE tbl_pet
+        SET
+            pet_name = #{petName}
+          , petAge = #{petAge}
+          , injection = #{injection}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM tbl_pet
+        WHERE id = #{id}
+    </delete>
+
+    <select id="petCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pet
+    </select>
+
+</mapper>

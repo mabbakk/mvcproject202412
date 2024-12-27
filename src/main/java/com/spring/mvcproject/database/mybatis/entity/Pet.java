@@ -20,7 +20,7 @@ import lombok.*;
 public class Pet {
     private Long id;
     private String petName;
-    private int patAge;
+    private int petAge;
     private boolean injection;
 
 }
