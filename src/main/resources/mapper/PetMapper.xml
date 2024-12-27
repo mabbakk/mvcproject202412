@@ -26,7 +26,7 @@
         UPDATE tbl_pet
         SET
             pet_name = #{petName}
-          , petAge = #{petAge}
+          , pet_age = #{petAge}
           , injection = #{injection}
         WHERE id = #{id}
     </update>
